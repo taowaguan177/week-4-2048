@@ -105,30 +105,23 @@ public:
         if (direction == 'd') {
             for (int i = 0; i < 4; i++)
             {
-                reverse(board[i], board[i] + 4);
-                if (compressAndMerge(board[i])) {
+                int row[4] = { board[i][3],board[i][2],board[i][1],board[i][0] };
+                if (compressAndMerge(row)) {
                     changed = true;
+                    board[i][0] = row[3]; board[i][1] = row[2];
+                    board[i][2] = row[1]; board[i][3] = row[0];
                 }
-                reverse(board[i], board[i] + 4);
             }
         }
         // TODO: Handle 'w' (Move Up)
         // Action: Extract column -> compressAndMerge -> Store back to column.
-        int rboard[4][4];
         if (direction == 'w') {
             for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 4; j++) {
-                    rboard[i][j] = board[j][i];
-                }
-            }
-            for (int i = 0; i < 4; i++) {
-                if (compressAndMerge(rboard[i])) {
+                int row[4] = {board[0][i],board[1][i],board[2][i],board[3][i]};
+                if (compressAndMerge(row)) {
                     changed = true;
-                }
-            }
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 4; j++) {
-                    board[i][j] = rboard[j][i];
+                    board[0][i] = row[0]; board[1][i] = row[1];
+                    board[2][i] = row[2]; board[3][i] = row[3];
                 }
             }
         }
@@ -136,25 +129,15 @@ public:
         // Action: Extract column -> Reverse -> compressAndMerge -> Reverse back -> Store.
         if (direction == 's') {
             for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 4; j++) {
-                    rboard[i][j] = board[j][i];
-                }
-            }
-            for (int i = 0; i < 4; i++) {
-                reverse(rboard[i], rboard[i] + 4);
-                if (compressAndMerge(rboard[i]))
+                int row[4] = { board[3][i],board[2][i],board[1][i],board[0][i] };
+                if (compressAndMerge(row))
                 {
                     changed = true;
-                }
-                reverse(rboard[i], rboard[i] + 4);
-            }
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 4; j++) {
-                    board[i][j] = rboard[j][i];
+                    board[3][i] = row[0]; board[2][i] = row[1];
+                    board[1][i] = row[2]; board[0][i] = row[3];
                 }
             }
         }
-
         if (changed && addRandom) addRandomTile();
         return changed;
     }
